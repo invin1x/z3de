@@ -1,34 +1,11 @@
 #include "mesh.h"
+#include "main.h"
 
 #include <iostream>
 
-#include "stb_image.h"
-
 // Constructor
-mesh::mesh(const std::vector<glm::vec3>& vertices,
-    const std::vector<glm::vec2>& uvs,
-    const std::vector<int>& indices,
-    const char* texturePath
-) : vertices(vertices), uvs(uvs), indices(indices) {
-    // Load texture
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load(texturePath, &width, &height, &nrChannels, 0);
-    if (data) {
-        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        std::cout << "Failed to load texture: " << texturePath << std::endl;
-    }
-    stbi_image_free(data);
-
+mesh::mesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& uvs, const std::vector<int>& indices, bool canBeDrawn, std::string tex)
+    : vertices(vertices), uvs(uvs), indices(indices), canBeDrawn(canBeDrawn), tex(tex) {
     // Init mesh (VAO, VBO, EBO)
     std::vector<float> vertexData;
     for (size_t i = 0; i < vertices.size(); ++i) {
@@ -59,14 +36,16 @@ mesh::~mesh() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    glDeleteTextures(1, &textureID);
 }
 
-// Method to draw the mesh
+// Draws the mesh
 void mesh::draw() {
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+    // Return, if mesh is not drawable
+    if (!canBeDrawn)
+        return;
+
+    useTexture(tex);        // Use texture
+    glBindVertexArray(VAO); // Bind VAO
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0); // Draw the binded VAO
+    glBindVertexArray(0);   // Unbind VAO
 }

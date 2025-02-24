@@ -11,6 +11,10 @@
 #include "GLFW/glfw3.h"
 #include "glm.hpp"
 #include "gtc/type_ptr.hpp"
+#include "stb_image.h"
+
+GLuint shaderProgram;                   // Shader program
+std::map<std::string, GLuint> textures; // Map of loaded textures. Keys represent paths, and values - texture ID
 
 // The entry point
 int main() {
@@ -22,10 +26,10 @@ int main() {
     // Init OpenGL
     glewInit();
     glEnable(GL_DEPTH_TEST);                      // Init depth test for 3D
-    GLuint shaderProgram = createShaderProgram(); // Create shader program
+    shaderProgram = createShaderProgram(); // Create shader program
     glUseProgram(shaderProgram);                  // Use this shader program
-    // Link texture samples to texture units
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+
+    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0); // Link texture sample to texture unit
 
     std::vector<mesh> meshes; // List of meshes to draw
 
@@ -47,7 +51,7 @@ int main() {
             { 0.5f, -0.5f, -0.5f }, { 0.5f,  0.5f, -0.5f }, { 0.5f,  0.5f,  0.5f }, { 0.5f, -0.5f,  0.5f },
             { -0.5f,  0.5f, -0.5f }, { 0.5f,  0.5f, -0.5f }, { 0.5f,  0.5f,  0.5f }, { -0.5f,  0.5f,  0.5f },
             { -0.5f, -0.5f, -0.5f }, { 0.5f, -0.5f, -0.5f }, { 0.5f, -0.5f,  0.5f }, { -0.5f, -0.5f,  0.5f }
-    },
+        },
         std::vector<glm::vec2> {
             {0.0f, 0.0f}, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f },
             { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f },
@@ -55,7 +59,7 @@ int main() {
             { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f },
             { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f },
             { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f }
-    },
+        },
         std::vector<int> {
         0, 1, 2, 2, 3, 0,
             4, 5, 6, 6, 7, 4,
@@ -63,7 +67,8 @@ int main() {
             12, 13, 14, 14, 15, 12,
             16, 17, 18, 18, 19, 16,
             20, 21, 22, 22, 23, 20
-    },
+        },
+        true,
         "test.png"
     );
 
@@ -74,8 +79,8 @@ int main() {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear screen and depth buffer
 
-        float speed = 0.05f;
-        float sens = 0.05f;
+        float speed = 0.005f;
+        float sens = 0.0025f;
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             camera.pos += camera.getForward() * speed;
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -102,13 +107,13 @@ int main() {
             camera.ang += glm::vec3(0, 0, sens);
 
         // Apply transform matrices
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, value_ptr(glm::mat4(1.0f)));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, value_ptr(camera.getView()));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, value_ptr(camera.getProj()));
 
         // Draw every mesh
-        for (mesh& mesh : meshes)
+        for (mesh& mesh : meshes) {
             mesh.draw();
+        }
 
         // Swap buffers and poll events
         glfwSwapBuffers(window);
@@ -117,6 +122,10 @@ int main() {
     //
     // END OF MAIN GAME LOOP
     //
+
+    // Unload textures
+    for (const auto& texture : textures)
+        glDeleteTextures(1, &texture.second);
 
     glfwTerminate(); // Unload GLFW
     return 0;        // GG
@@ -165,4 +174,35 @@ GLuint createShaderProgram() {
     }
 
     return shaderProgram;
+}
+
+// Loads texture (if needed), and binds it. If failed, uses just white color
+void useTexture(std::string path) {
+    if (textures.find(path) == textures.end()) {
+        int width, height, nrChannels;
+        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+        if (data) {
+            GLuint texId;
+            glGenTextures(1, &texId);
+            glBindTexture(GL_TEXTURE_2D, texId);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            textures[path] = texId;
+        }
+        else {
+            std::cout << "Failed to load texture: " << path << std::endl;
+            glUniform1i(glGetUniformLocation(shaderProgram, "useTexture"), 0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            return;
+        }
+        stbi_image_free(data);
+    }
+    glUniform1i(glGetUniformLocation(shaderProgram, "useTexture"), 1);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textures[path]);
 }
