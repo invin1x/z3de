@@ -11,8 +11,9 @@ file(WRITE "${CMAKE_SOURCE_DIR}/include/shaders/fragment.h" "//\n// This header 
 # Source files
 add_executable(z3de
     "src/main.cpp"
-    "src/camera.cpp"
- "include/mesh.h" "src/mesh.cpp")
+    "src/engine/Camera.cpp"
+    "src/engine/Mesh.cpp"
+)
 
 # Include directories
 target_include_directories(z3de PRIVATE
@@ -28,11 +29,4 @@ target_link_libraries(z3de PRIVATE
     opengl32
     "${CMAKE_SOURCE_DIR}/external/glew-2.2.0/lib/Release/Win32/glew32s.lib"
     "${CMAKE_SOURCE_DIR}/external/glfw-3.4.bin.WIN32/lib-vc2022/glfw3.lib"
-)
-
-# Preprocessor macrosses
-target_compile_definitions(z3de PRIVATE
-    GLEW_STATIC
-    STB_IMAGE_IMPLEMENTATION
-    _USE_MATH_DEFINES
 )

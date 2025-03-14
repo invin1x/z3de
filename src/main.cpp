@@ -1,10 +1,9 @@
 #include "main.h"
 #include "shaders/vertex.h"
 #include "shaders/fragment.h"
-#include "mesh.h"
-#include "camera.h"
+#include "engine/Mesh.h"
+#include "engine/Camera.h"
 
-#include <vector>
 #include <iostream>
 
 #include "GL/glew.h"
@@ -16,6 +15,7 @@
 GLuint shaderProgram;                   // Shader program
 std::map<std::string, GLuint> textures; // Map of loaded textures. Keys represent paths, and values - texture ID
 
+
 // The entry point
 int main() {
     // Init GLFW
@@ -25,15 +25,15 @@ int main() {
 
     // Init OpenGL
     glewInit();
-    glEnable(GL_DEPTH_TEST);                      // Init depth test for 3D
+    glEnable(GL_DEPTH_TEST);                      // Enable depth test for 3D
     shaderProgram = createShaderProgram(); // Create shader program
     glUseProgram(shaderProgram);                  // Use this shader program
 
     glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0); // Link texture sample to texture unit
 
-    std::vector<mesh> meshes; // List of meshes to draw
+    std::vector<Mesh> meshes; // List of meshes to draw
 
-    camera camera(
+    Camera camera(
         glm::vec3(-3, 3, 3),
         glm::vec3(glm::radians(45.0f),
         glm::radians(-45.0f),
@@ -111,7 +111,7 @@ int main() {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, value_ptr(camera.getProj()));
 
         // Draw every mesh
-        for (mesh& mesh : meshes) {
+        for (Mesh& mesh : meshes) {
             mesh.draw();
         }
 
