@@ -1,0 +1,4 @@
+thirdparty/
+include/shaders/vertex.h
+include/shaders/fragment.h
+out/
