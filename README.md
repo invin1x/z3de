@@ -60,3 +60,8 @@ A simple 3D engine that I'm developing just for fun.
 
    Single-file public domain (or MIT licensed) libraries for C/C++.
  - STB repository: [click](https://github.com/nothings/stb.git)
+
+### Dear ImGUI
+
+   Dear ImGui is a bloat-free graphical user interface library for C++. It outputs optimized vertex buffers that you can render anytime in your 3D-pipeline-enabled application. It is fast, portable, renderer agnostic, and self-contained (no external dependencies).
+ - Dear ImGui repository: [click](https://github.com/ocornut/imgui.git)
