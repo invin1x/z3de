@@ -2,6 +2,7 @@
 #include <ctime>
 #include <chrono>
 #include <iomanip>
+#include <sstream>
 
 std::string logs;               // Logs
 std::ofstream log_file_stream;  // Log file stream
