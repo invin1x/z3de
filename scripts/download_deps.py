@@ -19,6 +19,6 @@ for dep in deps:
         zip_file.write(requests.get(dep).content)
     print("Extracting...")
     with zipfile.ZipFile("DownloadCache", "r") as zip_ref:
-        zip_ref.extractall("./thirdparty")
+        zip_ref.extractall("../thirdparty")
 os.remove("DownloadCache")
 print("\nDone!")
