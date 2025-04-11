@@ -209,42 +209,100 @@ int main()
 
     // Load texture
     loadTexture("test.png");
-    loadTexture("test2.png");
+    loadTexture("sky.png");
+    loadTexture("grass.png");
     loadTexture("NormalMap.png");
-    Face face
-    (
-        std::vector<glm::vec3>
-        {
-            {0, 0, -1}, { 1, 0, -1 }, { 1,  1, -1 }, { 0,  1, -1 }
-        },
-        Material("test.png"),
-        std::vector<glm::vec2>
-        {
-            {0, 0}, { 1, 0 }, { 1, 1 }, { 0, 1 }
-        }
-    );
-    Face face2
-    (
-        std::vector<glm::vec3>
-        {
-            {-1, -1, -1}, { 0, -1, -1 }, { 0,  0, -1 }, { -1,  0, -1 }, { -2, 0, -1 }, { -2,  -1, -1 }
-        },
-        Material("test2.png", "NormalMap.png"),
-        std::vector<glm::vec2>
-        {
-            {1, 1}, { 1, 0 }, { 0, 0 }, { 0, 1 }, { 0, 2 }, {1, 2}
-        }
-    );
+    loadTexture("whitr.png");
+    loadTexture("black.png");
     
-    SunLight sun(glm::vec3(1.0f, 1.0f, -1.0f), glm::vec3(1.0f, 0.9f, 0.7f), 0.5f);
+    std::vector<Face*> faces = 
+    {
+        // Sky
+        new Face
+        (
+            std::vector<glm::vec3> { { -50, -50, -50}, { 50, -50, -50 }, { 50,  50, -50 }, { -50,  50, -50 } },
+            Material("sky.png", "", "", "", "", false),
+            std::vector<glm::vec2> { { 0.5f, 1 }, { 0.5f, 0.66f }, { 0.25f, 0.66f }, { 0.25f, 1 } }
+        ),
+        new Face
+        (
+            std::vector<glm::vec3> { { 50, -50, -50}, { 50, -50, 50 }, { 50,  50, 50 }, { 50,  50, -50 } },
+            Material("sky.png", "", "", "", "", false),
+            std::vector<glm::vec2> { { 0.5f, 0.66 }, { 0.5f, 0.33f }, { 0.25f, 0.33f }, { 0.25f, 0.66f } }
+        ),
+        new Face
+        (
+            std::vector<glm::vec3> { { 50, -50, 50}, { -50, -50, 50 }, { -50,  50, 50 }, { 50,  50, 50 } },
+            Material("sky.png", "", "", "", "", false),
+            std::vector<glm::vec2> { { 0.5f, 0.33 }, { 0.5f, 0 }, { 0.25f, 0 }, { 0.25f, 0.33f } }
+        ),
+        new Face
+        (
+            std::vector<glm::vec3> { { 50, 50, -50}, { 50, 50, 50 }, { -50, 50, 50 }, { -50,  50, -50 } },
+            Material("sky.png", "", "", "", "", false),
+            std::vector<glm::vec2> { { 0.25f, 0.66 }, { 0.25f, 0.33f }, { 0, 0.33f }, { 0, 0.66f } }
+        ),
+        new Face
+        (
+            std::vector<glm::vec3> { { -50, -50, -50}, { -50, -50, 50 }, { 50, -50, 50 }, { 50,  -50, -50 } },
+            Material("sky.png", "", "", "", "", false),
+            std::vector<glm::vec2> { { 0.75f, 0.66 }, { 0.75f, 0.33f }, { 0.5f, 0.33f }, { 0.5f, 0.66f } }
+        ),
+        new Face
+        (
+            std::vector<glm::vec3> { { -50, 50, -50}, { -50, 50, 50 }, { -50, -50, 50 }, { -50,  -50, -50 } },
+            Material("sky.png", "", "", "", "", false),
+            std::vector<glm::vec2> { { 1, 0.66 }, { 1, 0.33f }, { 0.75f, 0.33f }, { 0.75f, 0.66f } }
+        ),
+
+        // Grass
+        new Face
+        (
+            std::vector<glm::vec3> { { -50, -50, -1}, { 50, -50, -1 }, { 50,  50, -1}, { -50,  50, -1 } },
+            Material("grass.png", "", "black.png", "white.png"),
+            std::vector<glm::vec2> { { 10, 10 }, { 10, 0 }, { 0, 0 }, { 0, 10 } }
+        ),
+
+        // Cube
+        new Face(
+            std::vector<glm::vec3> { { -1, -1,  1}, { 1, -1,  1}, { 1,  1,  1}, { -1,  1,  1} },
+            Material("", "NormalMap.png"),
+            std::vector<glm::vec2> { {0, 0}, {1, 0}, {1, 1}, {0, 1} }
+        ),
+        new Face(
+            std::vector<glm::vec3> { { 1, -1, -1}, { -1, -1, -1}, { -1,  1, -1}, { 1,  1, -1} },
+            Material(""),
+            std::vector<glm::vec2> { {0, 0}, {1, 0}, {1, 1}, {0, 1} }
+        ),
+        new Face(
+            std::vector<glm::vec3> { { -1, -1, -1}, { -1, -1,  1}, { -1,  1,  1}, { -1,  1, -1} },
+            Material(""),
+            std::vector<glm::vec2> { {0, 0}, {1, 0}, {1, 1}, {0, 1} }
+        ),
+        new Face(
+            std::vector<glm::vec3> { { 1, -1,  1}, { 1, -1, -1}, { 1,  1, -1}, { 1,  1,  1} },
+            Material(""),
+            std::vector<glm::vec2> { {0, 0}, {1, 0}, {1, 1}, {0, 1} }
+        ),
+        new Face(
+            std::vector<glm::vec3> { { -1, 1,  1}, { 1, 1,  1}, { 1, 1, -1}, { -1, 1, -1} },
+            Material(""),
+            std::vector<glm::vec2> { {0, 0}, {1, 0}, {1, 1}, {0, 1} }
+        ),
+        new Face(
+            std::vector<glm::vec3> { { -1, -1, -1}, { 1, -1, -1}, { 1, -1,  1}, { -1, -1,  1} },
+            Material(""),
+            std::vector<glm::vec2> { {0, 0}, {1, 0}, {1, 1}, {0, 1} }
+        )
+    };
+    
+    Camera cam(glm::vec3(-2.25f,-0.5f,-0.5f), glm::vec3(glm::radians(30.0f), glm::radians(0.0f), 0.0f), glm::radians(90.0f), 16.0f / 9.0f);
+
+    SunLight sun(glm::vec3(1.0f, 2.0f, -1.0f), glm::vec3(1.0f, 0.9f, 0.7f), 1.0f);
 
     std::vector<Light> lights =
     {
-        
     };
-
-    Camera cam(glm::vec3(-2.25f,-0.5f,-0.5f), glm::vec3(glm::radians(30.0f), glm::radians(0.0f), 0.0f), glm::radians(90.0f), 16.0f / 9.0f);
-
 
     //
     // ======== MAIN LOOP ========
@@ -269,6 +327,7 @@ int main()
         if (is_looking_right)
             cam.ang.y -= sens;
 
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
@@ -289,10 +348,9 @@ int main()
             glUniform3fv(glGetUniformLocation(shaderProgram, (baseName + ".color").c_str()),     1, glm::value_ptr(lights[i].color));
             glUniform1f (glGetUniformLocation(shaderProgram, (baseName + ".intensity").c_str()), lights[i].intensity);
         }
-    
 
-        face.draw(shaderProgram);
-        face2.draw(shaderProgram);
+        for (auto face : faces)
+            face->draw(shaderProgram);
 
         // Render the developer console (if needed)
         if (console_visible == true)

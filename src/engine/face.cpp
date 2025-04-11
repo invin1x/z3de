@@ -80,6 +80,7 @@ void Face::draw(const GLuint& shaderProgram)
     glUniform1i(glGetUniformLocation(shaderProgram, "useSpecularMap"),     mat.specular_map != "");
     glUniform1i(glGetUniformLocation(shaderProgram, "useRoughnessMap"),    mat.roughness_map != "");
     glUniform1i(glGetUniformLocation(shaderProgram, "useTransparencyMap"), mat.transparency_map != "");
+    glUniform1i(glGetUniformLocation(shaderProgram, "lightning"),          mat.lightning);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, getTextureIdByName(mat.albedo_map));
