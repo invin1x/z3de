@@ -15,6 +15,7 @@
 #include "shaders.hpp"
 #include "engine/textures.hpp"
 #include "engine/camera.hpp"
+#include "engine/lights.hpp"
 
 bool console_visible = false;
 
@@ -234,6 +235,13 @@ int main()
             {1, 1}, { 1, 0 }, { 0, 0 }, { 0, 1 }, { 0, 2 }, {1, 2}
         }
     );
+    
+    SunLight sun(glm::vec3(1.0f, 1.0f, -1.0f), glm::vec3(1.0f, 0.9f, 0.7f), 0.5f);
+
+    std::vector<Light> lights =
+    {
+        
+    };
 
     Camera cam(glm::vec3(-2.25f,-0.5f,-0.5f), glm::vec3(glm::radians(30.0f), glm::radians(0.0f), 0.0f), glm::radians(90.0f), 16.0f / 9.0f);
 
@@ -266,25 +274,25 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(cam.getView()));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(cam.getProj()));
+        glUniform3fv(glGetUniformLocation(shaderProgram, "viewpos"), 1, glm::value_ptr(cam.pos));
 
-        glm::vec3 sun_color(1.0f, 0.8f, 0.4f);
-        glm::vec3 sun_dir(1.0f, 1.0f, -1.0f);
-        glm::vec3 viewpos = cam.pos;
+        glUniform3fv(glGetUniformLocation(shaderProgram, "sun.direction"), 1, glm::value_ptr(sun.direction));
+        glUniform3fv(glGetUniformLocation(shaderProgram, "sun.color"), 1, glm::value_ptr(sun.color));
+        glUniform1f(glGetUniformLocation(shaderProgram, "sun.intensity"), sun.intensity);
 
-        glUniform3fv(glGetUniformLocation(shaderProgram, "sun.color"), 1, &sun_color[0]);
-        glUniform1f(glGetUniformLocation(shaderProgram, "sun.intensity"), 1.0f);
-        glUniform3fv(glGetUniformLocation(shaderProgram, "sun.direction"), 1, &sun_dir[0]);
+        glUniform1i(glGetUniformLocation(shaderProgram, "numPointLights"), lights.size());
+        for (int i = 0; i < lights.size(); ++i) {
+            std::string baseName = "pointLights[" + std::to_string(i) + "]";
+            glUniform3fv(glGetUniformLocation(shaderProgram, (baseName + ".position").c_str()), 1, glm::value_ptr(lights[i].position));
+            glUniform3fv(glGetUniformLocation(shaderProgram, (baseName + ".direction").c_str()), 1, glm::value_ptr(lights[i].direction));
+            glUniform1f (glGetUniformLocation(shaderProgram, (baseName + ".angle").c_str()),     lights[i].angle);
+            glUniform3fv(glGetUniformLocation(shaderProgram, (baseName + ".color").c_str()),     1, glm::value_ptr(lights[i].color));
+            glUniform1f (glGetUniformLocation(shaderProgram, (baseName + ".intensity").c_str()), lights[i].intensity);
+        }
+    
 
-        glUniform3fv(glGetUniformLocation(shaderProgram, "viewpos"), 1, &viewpos[0]);
-
-        glUniform1i(glGetUniformLocation(shaderProgram, "useAlbedoMap"), 1);
-        glUniform1i(glGetUniformLocation(shaderProgram, "useNormalMap"), 1);
-        glUniform1i(glGetUniformLocation(shaderProgram, "useSpecularMap"), 0);
-        glUniform1i(glGetUniformLocation(shaderProgram, "useRoughnessMap"), 0);
-        glUniform1i(glGetUniformLocation(shaderProgram, "useTransparencyMap"), 0);
-
-        face.draw();
-        face2.draw();
+        face.draw(shaderProgram);
+        face2.draw(shaderProgram);
 
         // Render the developer console (if needed)
         if (console_visible == true)

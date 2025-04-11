@@ -24,7 +24,7 @@ public:
 
     ~Face();
 
-    void draw();
+    void draw(const GLuint& shaderProgram);
 };
 
 #endif // FACE_HPP

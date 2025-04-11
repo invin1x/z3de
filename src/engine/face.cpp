@@ -73,16 +73,28 @@ Face::~Face()
     glDeleteBuffers(1, &EBO);
 }
 
-void Face::draw()
+void Face::draw(const GLuint& shaderProgram)
 {
+    glUniform1i(glGetUniformLocation(shaderProgram, "useAlbedoMap"),       mat.albedo_map != "");
+    glUniform1i(glGetUniformLocation(shaderProgram, "useNormalMap"),       mat.normal_map != "");
+    glUniform1i(glGetUniformLocation(shaderProgram, "useSpecularMap"),     mat.specular_map != "");
+    glUniform1i(glGetUniformLocation(shaderProgram, "useRoughnessMap"),    mat.roughness_map != "");
+    glUniform1i(glGetUniformLocation(shaderProgram, "useTransparencyMap"), mat.transparency_map != "");
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, getTextureIdByName(mat.albedo_map));
 
-    if (mat.normal_map != "")
-    {
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, getTextureIdByName(mat.normal_map));        
-    }
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, getTextureIdByName(mat.normal_map));
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, getTextureIdByName(mat.specular_map));
+
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, getTextureIdByName(mat.roughness_map));
+
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, getTextureIdByName(mat.transparency_map));
 
     glBindVertexArray(VAO); // Bind VAO
     glDrawArrays(GL_POLYGON, 0, verts.size()); // Draw the binded VAO
