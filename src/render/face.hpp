@@ -4,7 +4,7 @@
 #include <vector>
 #include "GL/glew.h"
 #include "glm.hpp"
-#include "engine/material.hpp"
+#include "render/material.hpp"
 
 struct Face
 {

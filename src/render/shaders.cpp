@@ -1,7 +1,7 @@
-#include "shaders.hpp"
-#include "shader_sources.hpp"
-#include "logging.hpp"
+#include "render/shaders.hpp"
+#include "interactions/logging.hpp"
 #include <vector>
+#include "config.hpp"
 
 // Compiles shader
 GLuint compileShader(const GLenum& type, const char* source)
@@ -27,8 +27,8 @@ GLuint createShaderProgram()
 {
     std::vector<GLuint> shaders =
     {
-        compileShader(GL_VERTEX_SHADER, SHADER_VERTEX_SOURCE),
-        compileShader(GL_FRAGMENT_SHADER, SHADER_FRAGMENT_SOURCE)
+        compileShader(GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE),
+        compileShader(GL_FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE)
     };
 
     GLuint shaderProgram = glCreateProgram();

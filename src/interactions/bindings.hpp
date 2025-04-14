@@ -17,7 +17,7 @@ int key_look_right                   = GLFW_KEY_RIGHT;
 int key_look_roll_left               = GLFW_KEY_Q;
 int key_look_roll_right              = GLFW_KEY_E;
 
-int key_toggle_developer_console = GLFW_KEY_GRAVE_ACCENT;
-int key_exit                     = GLFW_KEY_ESCAPE;
+int key_toggle_developer_console     = GLFW_KEY_GRAVE_ACCENT;
+int key_exit                         = GLFW_KEY_ESCAPE;
 
 #endif // BINDINGS_HPP

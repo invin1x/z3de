@@ -1,4 +1,4 @@
-#include "engine/camera.hpp"
+#include "render/camera.hpp"
 
 #include "gtc/quaternion.hpp"
 #include "ext/quaternion_trigonometric.hpp"
@@ -6,8 +6,16 @@
 #include "ext/matrix_clip_space.hpp"
 
 // Constructor
-Camera::Camera(const glm::vec3& pos, const glm::vec3& ang, float fov, float aspect)
-	: pos(pos), ang(ang), fov(fov), aspect(aspect) {}
+Camera::Camera
+(
+    const glm::vec3& pos,
+    const glm::vec3& ang,
+    float fov,
+    float aspect
+) : pos(pos),
+    ang(ang),
+    fov(fov),
+    aspect(aspect) {}
 
 // Gets forward direction (local X vector direction)
 glm::vec3 Camera::getForward() const
@@ -46,4 +54,3 @@ glm::quat Camera::getRot() const
         * glm::angleAxis(-ang.x, glm::vec3(0, 1, 0))
         * glm::angleAxis(-ang.y, glm::vec3(0, 0, 1));
 }
-    

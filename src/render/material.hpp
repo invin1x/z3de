@@ -2,6 +2,7 @@
 #define MATERIAL_HPP
 
 #include <string>
+#include <GL/glew.h>
 
 struct Material
 {
@@ -29,5 +30,8 @@ struct Material
         transparency_map(transparency_map),
         lightning(lightning) {}
 };
+
+GLuint getTextureIdByName(const std::string& name);
+bool loadTexture(const std::string& texture_path);
 
 #endif // MATERIAL_HPP

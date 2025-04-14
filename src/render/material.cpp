@@ -1,7 +1,7 @@
-#include "engine/textures.hpp"
+#include "render/material.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include "logging.hpp"
+#include "interactions/logging.hpp"
 #include <unordered_map>
 
 namespace
