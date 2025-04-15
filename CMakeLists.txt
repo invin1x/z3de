@@ -12,33 +12,35 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/thirdparty/glew-2.2.0/build/cmake")
 
 add_executable(z3de)
 
+# -------- Define shader sources --------
 
-
-file(READ "${CMAKE_SOURCE_DIR}/src/render/shaders/vertex.glsl" VERTEX_SHADER_SOURCE)
+file(READ "${CMAKE_SOURCE_DIR}/src/shader_sources/vertex.glsl" VERTEX_SHADER_SOURCE)
 string(REPLACE "\\" "\\\\" VERTEX_SHADER_SOURCE "${VERTEX_SHADER_SOURCE}")
 string(REPLACE "\"" "\\\"" VERTEX_SHADER_SOURCE "${VERTEX_SHADER_SOURCE}")
 string(REPLACE "\n" "\\n" VERTEX_SHADER_SOURCE "${VERTEX_SHADER_SOURCE}")
 string(REPLACE "\r" "" VERTEX_SHADER_SOURCE "${VERTEX_SHADER_SOURCE}")
-
-file(READ "${CMAKE_SOURCE_DIR}/src/render/shaders/fragment.glsl" FRAGMENT_SHADER_SOURCE)
+file(READ "${CMAKE_SOURCE_DIR}/src/shader_sources/fragment.glsl" FRAGMENT_SHADER_SOURCE)
 string(REPLACE "\\" "\\\\" FRAGMENT_SHADER_SOURCE "${FRAGMENT_SHADER_SOURCE}")
 string(REPLACE "\"" "\\\"" FRAGMENT_SHADER_SOURCE "${FRAGMENT_SHADER_SOURCE}")
 string(REPLACE "\n" "\\n" FRAGMENT_SHADER_SOURCE "${FRAGMENT_SHADER_SOURCE}")
 string(REPLACE "\r" "" FRAGMENT_SHADER_SOURCE "${FRAGMENT_SHADER_SOURCE}")
 
-configure_file(${CMAKE_SOURCE_DIR}/src/config.hpp.in ${CMAKE_BINARY_DIR}/config.hpp)
+configure_file(
+    ${CMAKE_SOURCE_DIR}/src/shader_sources_definitions.hpp.in
+    ${CMAKE_BINARY_DIR}/include/shader_sources_definitions.hpp
+)
 
-
+# -------- ================ --------
 
 # Source files
 target_sources(z3de PRIVATE
     # z3de sources
     "${CMAKE_SOURCE_DIR}/src/main.cpp"
-    "${CMAKE_SOURCE_DIR}/src/interactions/logging.cpp"
-    "${CMAKE_SOURCE_DIR}/src/render/material.cpp"
-    "${CMAKE_SOURCE_DIR}/src/render/shaders.cpp"
-    "${CMAKE_SOURCE_DIR}/src/render/face.cpp"
-    "${CMAKE_SOURCE_DIR}/src/render/camera.cpp"
+    "${CMAKE_SOURCE_DIR}/src/logging.cpp"
+    "${CMAKE_SOURCE_DIR}/src/material.cpp"
+    "${CMAKE_SOURCE_DIR}/src/shaders.cpp"
+    "${CMAKE_SOURCE_DIR}/src/face.cpp"
+    "${CMAKE_SOURCE_DIR}/src/camera.cpp"
     
     # ImGui sources
     "${CMAKE_SOURCE_DIR}/thirdparty/imgui-1.91.9b/imgui.cpp"
@@ -52,7 +54,7 @@ target_sources(z3de PRIVATE
 # Include catalogs
 target_include_directories(z3de PRIVATE
     "${CMAKE_SOURCE_DIR}/src"
-    "${CMAKE_CURRENT_BINARY_DIR}"
+    "${CMAKE_BINARY_DIR}/include"
     "${CMAKE_SOURCE_DIR}/thirdparty/glfw-3.4/include"
     "${CMAKE_SOURCE_DIR}/thirdparty/glew-2.2.0/include"
     "${CMAKE_SOURCE_DIR}/thirdparty/glm"

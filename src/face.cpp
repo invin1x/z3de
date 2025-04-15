@@ -1,4 +1,4 @@
-#include "render/face.hpp"
+#include "face.hpp"
 #include "glm.hpp"
 
 Face::Face

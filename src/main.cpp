@@ -1,20 +1,21 @@
 #include <iostream>
-#include "interactions/logging.hpp"
+#include <vector>
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
-#include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-#include "interactions/bindings.hpp"
-#include <vector>
-#include "render/face.hpp"
-#include "render/material.hpp"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "gtc/type_ptr.hpp"
-#include "render/shaders.hpp"
-#include "render/camera.hpp"
-#include "render/lights.hpp"
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+#include "logging.hpp"
+#include "bindings.hpp"
+#include "face.hpp"
+#include "material.hpp"
+#include "shaders.hpp"
+#include "camera.hpp"
+#include "light_structs/light.hpp"
+#include "light_structs/sunlight.hpp"
 
 bool console_visible = false;
 

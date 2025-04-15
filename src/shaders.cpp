@@ -1,7 +1,7 @@
-#include "render/shaders.hpp"
-#include "interactions/logging.hpp"
+#include "shaders.hpp"
+#include "shader_sources_definitions.hpp"
+#include "logging.hpp"
 #include <vector>
-#include "config.hpp"
 
 // Compiles shader
 GLuint compileShader(const GLenum& type, const char* source)

@@ -1,5 +1,5 @@
-#ifndef LIGHTS_HPP
-#define LIGHTS_HPP
+#ifndef LIGHT_HPP
+#define LIGHT_HPP
 
 #include "glm.hpp"
 
@@ -26,21 +26,4 @@ struct Light
         intensity(intensity) {}
 };
 
-struct SunLight
-{
-    glm::vec3 direction;
-    glm::vec3 color;
-    float intensity;
-
-    SunLight
-    (
-        const glm::vec3& direction,
-        const glm::vec3& color,
-        float intensity
-    )
-      : direction(direction),
-        color(color),
-        intensity(intensity) {}
-};
-
-#endif // LIGHTS_HPP
+#endif // LIGHT_HPP

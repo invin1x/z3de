@@ -1,4 +1,4 @@
-#include "interactions/logging.hpp"
+#include "logging.hpp"
 #include <ctime>
 #include <chrono>
 #include <iomanip>

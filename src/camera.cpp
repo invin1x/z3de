@@ -1,4 +1,4 @@
-#include "render/camera.hpp"
+#include "camera.hpp"
 
 #include "gtc/quaternion.hpp"
 #include "ext/quaternion_trigonometric.hpp"
